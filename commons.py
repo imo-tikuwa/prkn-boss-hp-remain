@@ -36,6 +36,10 @@ BOSS_HP_UPPER_BGR = (150, 180, 248)
 BINARY_BOSS_HP_REMAIN = cv2.imread(CURRENT_HP_TEMPLATE)
 BINARY_BOSS_HP_REMAIN = cv2.inRange(BINARY_BOSS_HP_REMAIN, BOSS_HP_LOWER_BGR, BOSS_HP_UPPER_BGR)
 
+# DMM版プリコネのウィンドウを最大化したときのサイズ(OSによって違う気がする)
+PRKN_WINDOW_MAX_WIDTH = 1296
+PRKN_WINDOW_MAX_HEIGHT = 759
+
 
 def execute_prkn():
     # DMM版プリコネを起動してハンドルを返す

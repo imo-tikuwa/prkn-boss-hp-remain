@@ -30,6 +30,12 @@ def main(development):
 
             rect_left, rect_top, rect_right, rect_bottom = win32gui.GetWindowRect(prkn_handle)
 
+            # ウィンドウサイズチェック
+            if (rect_right - rect_left < PRKN_WINDOW_MAX_WIDTH or rect_bottom - rect_top < PRKN_WINDOW_MAX_HEIGHT):
+                print(colored("ウィンドウサイズを最大にしてください", "red"))
+                time.sleep(2)
+                continue
+
             # ウィンドウの外枠＋数ピクセル余分にとれちゃうので1280x720の位置補正
             cap_left, cap_top, cap_right, cap_bottom = ajust_capture_position(rect_left, rect_top, rect_right, rect_bottom)
 
@@ -49,7 +55,7 @@ def main(development):
                 enemy_hp_size = math.floor(enemy_hp / 100)
                 progress_bar_size = math.floor(EX3_BOSS_HP / 100)
                 progress_bar = ('=' * enemy_hp_size) + (' ' * (progress_bar_size - enemy_hp_size))
-                print('\r残りHP:[{0}] {1} / {2}'.format(progress_bar, str(enemy_hp).rjust(4, ' '), str(EX3_BOSS_HP).rjust(4, ' ')), end='')
+                print('\r残りHP(万):[{0}] {1} / {2}'.format(progress_bar, str(enemy_hp).rjust(4, ' '), str(EX3_BOSS_HP).rjust(4, ' ')), end='')
 
     except KeyboardInterrupt:
         print(colored("プログラムを終了します", "green"))
