@@ -17,7 +17,7 @@ from termcolor import colored
 from commons import *
 
 @click.command()
-@click.option('--development','-dev',is_flag=True)
+@click.option('--development', '-dev', is_flag = True) # 有効にしたとき解析に使用した元画像を保存する
 def main(development):
 
     # プリコネを起動してハンドルを取得
@@ -30,17 +30,18 @@ def main(development):
 
             rect_left, rect_top, rect_right, rect_bottom = win32gui.GetWindowRect(prkn_handle)
 
-            # ウィンドウの外枠＋数ピクセル余分にとれちゃうので1280x960の位置補正
+            # ウィンドウの外枠＋数ピクセル余分にとれちゃうので1280x720の位置補正
             cap_left, cap_top, cap_right, cap_bottom = ajust_capture_position(rect_left, rect_top, rect_right, rect_bottom)
 
             # 指定した領域内をクリッピング
-            current_time = datetime.now().strftime('%Y%m%d%H%M%S%f')
             img = ImageGrab.grab(bbox=(cap_left, cap_top, cap_right, cap_bottom))
             if development:
+                current_time = datetime.now().strftime('%Y%m%d%H%M%S%f')
                 img.save(OUTPUT_DIR + current_time + '.png')
+
             original_frame = np.array(img)
 
-            # スコアの数字についてテンプレートマッチング
+            # 残りHPのテンプレートマッチング
             remain = analyze_hp(original_frame)
 
             if (remain):

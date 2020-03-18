@@ -56,6 +56,7 @@ def execute_prkn():
 
     print(colored("プリコネが起動してるよー", "green"))
     print(colored("Ctrl+Cで終了します", "green"))
+
     return prkn_handle
 
 
@@ -65,6 +66,7 @@ def ajust_capture_position(rect_left,rect_top,rect_right,rect_bottom):
     cap_top = rect_top + 32
     cap_right = cap_left + 1280
     cap_bottom = cap_top + 720
+
     return cap_left, cap_top, cap_right, cap_bottom
 
 
@@ -75,12 +77,12 @@ def analyze_hp(original_frame):
 
     # HPバーの部分を切り取り
     work_frame = original_frame[BOSS_HP_ROI[1]:BOSS_HP_ROI[3], BOSS_HP_ROI[0]:BOSS_HP_ROI[2]]
-    Image.fromarray(work_frame).save(OUTPUT_DIR + 'hoge1.png')
+#     Image.fromarray(work_frame).save(OUTPUT_DIR + 'dev1.png')
 
     # 二値化
     work_frame = cv2.cvtColor(work_frame, cv2.COLOR_RGB2BGR)
     work_frame = cv2.inRange(work_frame, BOSS_HP_LOWER_BGR, BOSS_HP_UPPER_BGR)
-    cv2.imwrite(OUTPUT_DIR + 'hoge2.png', work_frame)
+#     cv2.imwrite(OUTPUT_DIR + 'dev2.png', work_frame)
 
     # 残りHPの位置をテンプレートマッチングにより取得
     remain = None
@@ -92,8 +94,10 @@ def analyze_hp(original_frame):
 
     return remain
 
+
 def calc_remain(remain):
     # 残りHP計算
     # テンプレート画像のHPバーの長さ522pxと、取得した残りHP位置の比率からおおよその残りHPを出す
     result = math.floor(remain / BOSS_HP_WIDTH * EX3_BOSS_HP)
+
     return result
