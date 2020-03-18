@@ -1,0 +1,6 @@
+/.project
+/.pydevproject
+/settings.ini
+/__pycache__
+/output/*.png
+/memo.txt
