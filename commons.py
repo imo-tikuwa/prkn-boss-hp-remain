@@ -21,7 +21,6 @@ CONFIG_FILE_NAME = 'settings.ini'
 CONFIG_SECTION_NAME = 'config'
 OUTPUT_DIR = os.path.abspath(os.path.dirname(__file__)) + os.sep + 'output' + os.sep
 SAMPLE_DIR = os.path.abspath(os.path.dirname(__file__)) + os.sep + 'sample_data' + os.sep
-CURRENT_HP_TEMPLATE = SAMPLE_DIR + 'current_hp.png'
 
 # ボスのHP(万)
 EX3_BOSS_HP = 3500
@@ -33,12 +32,22 @@ BOSS_HP_WIDTH = BOSS_HP_ROI[2] - BOSS_HP_ROI[0]
 # ボスのHPの現在値のサンプルデータ(オレンジと黒の境界の場所)
 BOSS_HP_LOWER_BGR = (9, 43 ,123)
 BOSS_HP_UPPER_BGR = (150, 180, 248)
-BINARY_BOSS_HP_REMAIN = cv2.imread(CURRENT_HP_TEMPLATE)
+BINARY_BOSS_HP_REMAIN = cv2.imread(SAMPLE_DIR + 'current_hp.png')
 BINARY_BOSS_HP_REMAIN = cv2.inRange(BINARY_BOSS_HP_REMAIN, BOSS_HP_LOWER_BGR, BOSS_HP_UPPER_BGR)
 
 # DMM版プリコネのウィンドウを最大化したときのサイズ(OSによって違う気がする)
 PRKN_WINDOW_MAX_WIDTH = 1296
 PRKN_WINDOW_MAX_HEIGHT = 759
+
+# ボス名のROI
+BOSS_NAME_ROI = (693, 10, 828, 32)
+
+# ボス名のサンプルデータ
+BINARY_BOSS_NAME = cv2.imread(SAMPLE_DIR + 'boss_name.png')
+BINARY_BOSS_NAME = cv2.cvtColor(BINARY_BOSS_NAME, cv2.COLOR_BGR2GRAY)
+
+# プログレスバーのサイズ
+PROGRESS_BAR_SIZE = math.floor(EX3_BOSS_HP / 100)
 
 
 def execute_prkn():
@@ -73,6 +82,28 @@ def ajust_capture_position(rect_left,rect_top,rect_right,rect_bottom):
 
     return cap_left, cap_top, cap_right, cap_bottom
 
+
+def analyze_boss_attack(original_frame):
+    # ボス名解析
+    # ボス名が存在したらボス戦中ってことでtrueを返す、それ以外はfalse
+    is_boss = False
+
+    # ボス名の表示部分を切り取り
+    work_frame = original_frame[BOSS_NAME_ROI[1]:BOSS_NAME_ROI[3], BOSS_NAME_ROI[0]:BOSS_NAME_ROI[2]]
+#     Image.fromarray(work_frame).save(OUTPUT_DIR + 'bossname1.png')
+
+    # 二値化
+    work_frame = cv2.cvtColor(work_frame, cv2.COLOR_RGB2GRAY)
+#     cv2.imwrite(OUTPUT_DIR + 'bossname2.png', work_frame)
+
+    # テンプレートマッチング
+    res = cv2.matchTemplate(work_frame, BINARY_BOSS_NAME, cv2.TM_CCORR_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+#     print(min_val, max_val, min_loc, max_loc)
+    if (max_val > 0.92):
+        is_boss = True
+
+    return is_boss
 
 def analyze_hp(original_frame):
     # 残りHP解析

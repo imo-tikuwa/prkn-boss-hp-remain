@@ -47,14 +47,20 @@ def main(development):
 
             original_frame = np.array(img)
 
+            # ボス戦かどうかのテンプレートマッチング(ボス名で判定)
+            boss_attack = analyze_boss_attack(original_frame)
+            if not boss_attack:
+                time.sleep(1)
+                continue
+
             # 残りHPのテンプレートマッチング
             remain = analyze_hp(original_frame)
 
-            if (remain):
+            # 残りHP出力
+            if remain:
                 enemy_hp = calc_remain(remain)
                 enemy_hp_size = math.floor(enemy_hp / 100)
-                progress_bar_size = math.floor(EX3_BOSS_HP / 100)
-                progress_bar = ('=' * enemy_hp_size) + (' ' * (progress_bar_size - enemy_hp_size))
+                progress_bar = ('=' * enemy_hp_size) + (' ' * (PROGRESS_BAR_SIZE - enemy_hp_size))
                 print('\r残りHP(万):[{0}] {1} / {2}'.format(progress_bar, str(enemy_hp).rjust(4, ' '), str(EX3_BOSS_HP).rjust(4, ' ')), end='')
 
     except KeyboardInterrupt:
