@@ -1,4 +1,6 @@
 Click==7.0
+colorama==0.4.3
+configparser==4.0.2
 Flask==1.1.1
 itsdangerous==1.1.0
 Jinja2==2.11.1
@@ -16,6 +18,7 @@ PyScreeze==0.1.26
 pytube3==9.6.4
 PyTweening==1.0.3
 pywin32==227
+termcolor==1.1.0
 typing-extensions==3.7.4.1
 Werkzeug==1.0.0
 WTForms==2.2.1
