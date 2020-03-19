@@ -32,8 +32,7 @@ BOSS_HP_WIDTH = BOSS_HP_ROI[2] - BOSS_HP_ROI[0]
 # ボスのHPの現在値のサンプルデータ(オレンジと黒の境界の場所)
 BOSS_HP_LOWER_BGR = (9, 43 ,123)
 BOSS_HP_UPPER_BGR = (150, 180, 248)
-BINARY_BOSS_HP_REMAIN = cv2.imread(SAMPLE_DIR + 'current_hp.png')
-BINARY_BOSS_HP_REMAIN = cv2.inRange(BINARY_BOSS_HP_REMAIN, BOSS_HP_LOWER_BGR, BOSS_HP_UPPER_BGR)
+BINARY_BOSS_HP_REMAIN = cv2.inRange(cv2.imread(SAMPLE_DIR + 'current_hp.png'), BOSS_HP_LOWER_BGR, BOSS_HP_UPPER_BGR)
 
 # DMM版プリコネのウィンドウを最大化したときのサイズ(OSによって違う気がする)
 PRKN_WINDOW_MAX_WIDTH = 1296
@@ -43,11 +42,17 @@ PRKN_WINDOW_MAX_HEIGHT = 759
 BOSS_NAME_ROI = (693, 10, 828, 32)
 
 # ボス名のサンプルデータ
-BINARY_BOSS_NAME = cv2.imread(SAMPLE_DIR + 'boss_name.png')
-BINARY_BOSS_NAME = cv2.cvtColor(BINARY_BOSS_NAME, cv2.COLOR_BGR2GRAY)
+BINARY_BOSS_NAME = cv2.cvtColor(cv2.imread(SAMPLE_DIR + 'boss_name.png'), cv2.COLOR_BGR2GRAY)
 
 # プログレスバーのサイズ
 PROGRESS_BAR_SIZE = math.floor(EX3_BOSS_HP / 100)
+
+# ボスのHPバーのROI(枠含む)
+BOSS_HP_ALT_ROI = (380, 34, 902, 54)
+
+# HPが減った瞬間の火花エフェクトのサンプルデータ
+BINARY_BOSS_HP_REMAINING = cv2.cvtColor(cv2.imread(SAMPLE_DIR + 'hp_remaining.png'), cv2.COLOR_BGR2GRAY)
+# cv2.imwrite(OUTPUT_DIR + 'explode0.png', BINARY_BOSS_HP_REMAINING)
 
 
 def execute_prkn():
@@ -69,14 +74,14 @@ def execute_prkn():
 
     print("\nDMM版プリンセスコネクト！Re:Diveのラースドラゴンの残りHPを計算するやつ\n")
     print("========== 使い方 ==========")
-    print("1. DMM版プリンセスコネクト！Re:Diveを起動する")
-    print("2. ウィンドウのサイズを最大にする")
-    print("3. ウィンドウをアクティブ(一番上にくるよう)にする")
-    print("4. ダンジョンEX3のラースドラゴンに挑む")
-    print("　 ※ 画面のHPバーの部分をリアルタイムでキャプチャしておおよその残りHPを算出しています")
-    print("　　　他のウィンドウが重なったりするとうまく画面がキャプチャできないことがあります")
-    print("　 ※ 取得した残りHPは画面に生じたエフェクトによって割と頻繁にずれるので参考程度でお願いします")
-    print("　 ※ Windows10Proで動作確認してます。他の環境で動くかは未確認です")
+    print(" 1. DMM版プリンセスコネクト！Re:Diveを起動する")
+    print(" 2. ウィンドウのサイズを最大にする")
+    print(" 3. ウィンドウをアクティブ(一番上にくるよう)にする")
+    print(" 4. ダンジョンEX3のラースドラゴンに挑む\n")
+    print(" ※ 画面のHPバーの部分をリアルタイムでキャプチャしておおよその残りHPを算出しています")
+    print("　　他のウィンドウが重なったりするとうまく画面がキャプチャできないことがあります")
+    print(" ※ 取得した残りHPは画面に生じたエフェクトによって割と頻繁にずれるので参考程度でお願いします")
+    print(" ※ Windows10Proで動作確認してます。他の環境で動くかは未確認です")
     print("============================")
     print(colored("Ctrl+Cで終了します\n", "green"))
 
@@ -117,9 +122,21 @@ def analyze_boss_attack(original_frame):
 
 def analyze_hp(original_frame):
     # 残りHP解析
-    # ダメージを与えた瞬間の爆発エフェクトをキャプチャしたときの二値化がうまく行えてない模様。。
-    # 先にHPバーの外枠も含めたマッチングとかした方がいいのかもしれない
 
+    # 残りHPが解析可能か解析する処理
+    # HPバーに火花のエフェクトが走ってるとき後続のマッチングを行うと実際以上のダメージを計測してしまうので火花のマッチングを実施する
+    work_frame = original_frame[BOSS_HP_ALT_ROI[1]:BOSS_HP_ALT_ROI[3], BOSS_HP_ALT_ROI[0]:BOSS_HP_ALT_ROI[2]]
+    work_frame = cv2.cvtColor(work_frame, cv2.COLOR_RGB2GRAY)
+#     Image.fromarray(work_frame).save(OUTPUT_DIR + 'explode1.png')
+    res = cv2.matchTemplate(work_frame, BINARY_BOSS_HP_REMAINING, cv2.TM_CCORR_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+#     print(min_val, max_val, min_loc, max_loc)
+    if (max_val > 0.95):
+        time.sleep(0.2)
+        return None
+
+
+    # 残りHP解析処理
     # HPバーの部分を切り取り
     work_frame = original_frame[BOSS_HP_ROI[1]:BOSS_HP_ROI[3], BOSS_HP_ROI[0]:BOSS_HP_ROI[2]]
 #     Image.fromarray(work_frame).save(OUTPUT_DIR + 'dev1.png')
