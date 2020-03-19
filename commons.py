@@ -54,6 +54,9 @@ BOSS_HP_ALT_ROI = (380, 34, 902, 54)
 BINARY_BOSS_HP_REMAINING = cv2.cvtColor(cv2.imread(SAMPLE_DIR + 'hp_remaining.png'), cv2.COLOR_BGR2GRAY)
 # cv2.imwrite(OUTPUT_DIR + 'explode0.png', BINARY_BOSS_HP_REMAINING)
 
+# 残りHP計算のときのピクセル値の補正値
+REMAIN_AJUST_PX = -4
+
 
 def execute_prkn():
     # DMM版プリコネを起動してハンドルを返す
@@ -151,7 +154,7 @@ def analyze_hp(original_frame):
     res = cv2.matchTemplate(work_frame, BINARY_BOSS_HP_REMAIN, cv2.TM_CCORR_NORMED)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 #     print(min_val, max_val, min_loc, max_loc)
-    if (min_loc[0] > 0 and max_val > 0.85):
+    if (min_loc[0] > 0 and max_val > 0.83):
         remain = min_loc[0]
 
     return remain
@@ -160,6 +163,6 @@ def analyze_hp(original_frame):
 def calc_remain(remain):
     # 残りHP計算
     # テンプレート画像のHPバーの長さ522pxと、取得した残りHP位置の比率からおおよその残りHPを出す
-    result = math.floor(remain / BOSS_HP_WIDTH * EX3_BOSS_HP)
+    result = math.floor((remain + REMAIN_AJUST_PX) / BOSS_HP_WIDTH * EX3_BOSS_HP)
 
     return result
