@@ -32,12 +32,19 @@ def main(development):
 
             # ウィンドウサイズチェック
             if (rect_right - rect_left < PRKN_WINDOW_MAX_WIDTH or rect_bottom - rect_top < PRKN_WINDOW_MAX_HEIGHT):
-                print(colored("ウィンドウサイズを最大にしてください", "red"))
+                print(colored("ウィンドウサイズを最大にしてください", "yellow"))
                 time.sleep(2)
                 continue
 
             # ウィンドウの外枠＋数ピクセル余分にとれちゃうので1280x720の位置補正
             cap_left, cap_top, cap_right, cap_bottom = ajust_capture_position(rect_left, rect_top, rect_right, rect_bottom)
+#             print(cap_left, cap_top, cap_right, cap_bottom)
+
+            # マルチモニターでサブウィンドウ側に画面があるとうまくキャプチャできないみたいなのでアラート通知
+            if (cap_right > 1920):
+                print(colored("プリンセスコネクト！Re:Diveの画面がメインのディスプレイ収まるようウィンドウを移動してください", "yellow"))
+                time.sleep(1)
+                continue
 
             # 指定した領域内をクリッピング
             img = ImageGrab.grab(bbox=(cap_left, cap_top, cap_right, cap_bottom))
@@ -61,10 +68,10 @@ def main(development):
                 enemy_hp = calc_remain(remain)
                 enemy_hp_size = math.floor(enemy_hp / 100)
                 progress_bar = ('=' * enemy_hp_size) + (' ' * (PROGRESS_BAR_SIZE - enemy_hp_size))
-                print('\r残りHP(万):[{0}] {1} / {2}'.format(progress_bar, str(enemy_hp).rjust(4, ' '), str(EX3_BOSS_HP).rjust(4, ' ')), end='')
+                print('\r残りHP 約{1}万:[{0}] {1} / {2}'.format(progress_bar, str(enemy_hp).rjust(4, ' '), str(EX3_BOSS_HP).rjust(4, ' ')), end='')
 
     except KeyboardInterrupt:
-        print(colored("プログラムを終了します", "green"))
+        print(colored("\n\nプログラムを終了します", "green"))
         exit(0)
 
 if __name__ == '__main__':

@@ -64,11 +64,21 @@ def execute_prkn():
             if prkn_handle > 0:
                 break
 
-            print(colored("プリコネが起動してないよー", "red"))
+            print(colored("DMM版プリンセスコネクト！Re:Diveが起動していません", "yellow"))
             time.sleep(3)
 
-    print(colored("プリコネが起動してるよー", "green"))
-    print(colored("Ctrl+Cで終了します", "green"))
+    print("\nDMM版プリンセスコネクト！Re:Diveのラースドラゴンの残りHPを計算するやつ\n")
+    print("========== 使い方 ==========")
+    print("1. DMM版プリンセスコネクト！Re:Diveを起動する")
+    print("2. ウィンドウのサイズを最大にする")
+    print("3. ウィンドウをアクティブ(一番上にくるよう)にする")
+    print("4. ダンジョンEX3のラースドラゴンに挑む")
+    print("　 ※ 画面のHPバーの部分をリアルタイムでキャプチャしておおよその残りHPを算出しています")
+    print("　　　他のウィンドウが重なったりするとうまく画面がキャプチャできないことがあります")
+    print("　 ※ 取得した残りHP画面に生じたエフェクトによって頻繁にずれるので参考程度でお願いします")
+    print("　 ※ Windows10Proで動作確認してます。他の環境で動くかは未確認です")
+    print("============================")
+    print(colored("Ctrl+Cで終了します\n", "green"))
 
     return prkn_handle
 
