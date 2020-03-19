@@ -8,6 +8,7 @@ import cv2
 import win32gui
 import ctypes
 import math
+import pywintypes
 from PIL import ImageGrab
 import sys
 from datetime import datetime
@@ -69,6 +70,10 @@ def main(development):
                 enemy_hp_size = math.floor(enemy_hp / 100)
                 progress_bar = ('=' * enemy_hp_size) + (' ' * (PROGRESS_BAR_SIZE - enemy_hp_size))
                 print('\r残りHP 約{1}万:[{0}] {1} / {2}'.format(progress_bar, str(enemy_hp).rjust(4, ' '), str(EX3_BOSS_HP).rjust(4, ' ')), end='')
+
+    except pywintypes.error:
+        print(colored("\n\nプリンセスコネクト！Re:Diveが終了したのでプログラムも終了します", "green"))
+        exit(0)
 
     except KeyboardInterrupt:
         print(colored("\n\nプログラムを終了します", "green"))
