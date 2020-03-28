@@ -19,3 +19,18 @@ cd prkn-boss-hp-remain
 pip install -r requirements.txt
 python app.rb
 ```
+
+---
+venvを終了するときは以下
+```
+deactivate
+```
+
+
+## 実行ファイル化
+実行するとdistディレクトリ以下にapp.exeが生成されます
+```
+cd prkn-boss-hp-remain
+.\venv\Scripts\activate.bat
+pyinstaller app.spec
+```
