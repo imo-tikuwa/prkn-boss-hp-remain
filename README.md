@@ -15,6 +15,7 @@ DMM版プリンセスコネクト！Re:DiveのダンジョンEX3のボス「ラ�
 ```
 git clone https://github.com/imo-tikuwa/prkn-boss-hp-remain
 cd prkn-boss-hp-remain
+.\venv\Scripts\activate.bat
 pip install -r requirements.txt
 python app.rb
 ```
