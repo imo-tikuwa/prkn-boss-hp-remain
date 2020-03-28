@@ -1,4 +1,4 @@
-
+import sys
 import os
 import time
 import cv2
@@ -15,12 +15,20 @@ colorama.init()
 # 設定ファイルを利用する
 import configparser
 
+
+def resource_path(filename):
+    # exeファイル化に伴うリソースパスの動的な切り替えを行う関数
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, filename)
+    return os.path.join(filename)
+
+
 # 変数(定数扱いする変数)
 PRKN_WINDOW_NAME = 'PrincessConnectReDive'
 CONFIG_FILE_NAME = 'settings.ini'
 CONFIG_SECTION_NAME = 'config'
-OUTPUT_DIR = os.path.abspath(os.path.dirname(__file__)) + os.sep + 'output' + os.sep
-SAMPLE_DIR = os.path.abspath(os.path.dirname(__file__)) + os.sep + 'sample_data' + os.sep
+OUTPUT_DIR = 'output' + os.sep
+SAMPLE_DIR = 'sample_data' + os.sep
 
 # ボスのHP(万)
 EX3_BOSS_HP = 3500
@@ -32,7 +40,7 @@ BOSS_HP_WIDTH = BOSS_HP_ROI[2] - BOSS_HP_ROI[0]
 # ボスのHPの現在値のサンプルデータ(オレンジと黒の境界の場所)
 BOSS_HP_LOWER_BGR = (9, 43 ,123)
 BOSS_HP_UPPER_BGR = (150, 180, 248)
-BINARY_BOSS_HP_REMAIN = cv2.inRange(cv2.imread(SAMPLE_DIR + 'current_hp.png'), BOSS_HP_LOWER_BGR, BOSS_HP_UPPER_BGR)
+BINARY_BOSS_HP_REMAIN = cv2.inRange(cv2.imread(resource_path(SAMPLE_DIR + 'current_hp.png')), BOSS_HP_LOWER_BGR, BOSS_HP_UPPER_BGR)
 
 # DMM版プリコネのウィンドウを最大化したときのサイズ(OSによって違う気がする)
 PRKN_WINDOW_MAX_WIDTH = 1296
@@ -42,7 +50,7 @@ PRKN_WINDOW_MAX_HEIGHT = 759
 BOSS_NAME_ROI = (693, 10, 828, 32)
 
 # ボス名のサンプルデータ
-BINARY_BOSS_NAME = cv2.cvtColor(cv2.imread(SAMPLE_DIR + 'boss_name.png'), cv2.COLOR_BGR2GRAY)
+BINARY_BOSS_NAME = cv2.cvtColor(cv2.imread(resource_path(SAMPLE_DIR + 'boss_name.png')), cv2.COLOR_BGR2GRAY)
 
 # プログレスバーのサイズ
 PROGRESS_BAR_SIZE = math.floor(EX3_BOSS_HP / 100)
@@ -51,7 +59,7 @@ PROGRESS_BAR_SIZE = math.floor(EX3_BOSS_HP / 100)
 BOSS_HP_ALT_ROI = (380, 34, 902, 54)
 
 # HPが減った瞬間の火花エフェクトのサンプルデータ
-BINARY_BOSS_HP_REMAINING = cv2.cvtColor(cv2.imread(SAMPLE_DIR + 'hp_remaining.png'), cv2.COLOR_BGR2GRAY)
+BINARY_BOSS_HP_REMAINING = cv2.cvtColor(cv2.imread(resource_path(SAMPLE_DIR + 'hp_remaining.png')), cv2.COLOR_BGR2GRAY)
 # cv2.imwrite(OUTPUT_DIR + 'explode0.png', BINARY_BOSS_HP_REMAINING)
 
 # 残りHP計算のときのピクセル値の補正値

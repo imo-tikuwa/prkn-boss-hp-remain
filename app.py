@@ -73,11 +73,13 @@ def main(development):
 
     except pywintypes.error:
         print(colored("\n\nプリンセスコネクト！Re:Diveが終了したのでプログラムも終了します", "green"))
-        exit(0)
+        time.sleep(3)
+        sys.exit(0)
 
     except KeyboardInterrupt:
         print(colored("\n\nプログラムを終了します", "green"))
-        exit(0)
+        time.sleep(3)
+        sys.exit(0)
 
 if __name__ == '__main__':
     main()
